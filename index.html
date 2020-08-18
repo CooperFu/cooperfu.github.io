@@ -155,6 +155,115 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-docs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020-08-18/docs/">Mysql, 一条语句是怎么执行的?</a>
+    </h1>
+  
+
+        
+        <a href="/2020-08-18/docs/" class="archive-article-date">
+  	<time datetime="2020-08-18T08:10:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>select * from table where id=2;</code></p>
+<p>上面这条语句是怎么执行的呢?</p>
+<p><img src="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png" alt></p>
+<h3 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h3><p>首先mysql会连接mysql服务器, 通常是用 <code>mysql -h$ip -P$port -u$user -p</code> 的方式连接</p>
+<p>最后一个-p是密码, 不推荐明文直接输入, 上面的方式按回车后, 系统会让你输入密码, 然后根据内置的权限表查看当前用户是否有相关权限.</p>
+<p>默认保持一个长链接, 有一个参数是wait_timeout 默认是8小时.</p>
+<ul>
+<li>会有长连接相关问题.</li>
+</ul>
+<h3 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h3><ul>
+<li>通过输入的查询语句, 先会去查询缓存, 看看是否之前有查询过一模一样的语句, 有hit就直接返回.</li>
+<li>缓存策略大概是key-value的形式, key是查询语句, value是返回结果. key-value的好处是复杂度是O(1). </li>
+<li>但是基本很难命中, 因为但凡一个表中任意一条数据的一个小字段更新了, 那么这张表的缓存基本作废. 就会被移出掉.</li>
+<li>缓存例外基本是静态表, 比如一张配置表, 很久都不会有人去更新他, 那么缓存的作用就大大增加.</li>
+<li>可以直接指定查询缓存, <code>select SQL_CACHE * from table where id=2;</code> 但是在mysql 8.0之后 这个特性就去掉了.</li>
+</ul>
+<h3 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h3><p>分析器顾名思义, 就是分析输入的语句, 变成格式化的dsl</p>
+<p><code>select * from table where id=2;</code></p>
+<p>就会分析 是要从 table这张表中 找  列id的值等于2 的结果.</p>
+<p>如果打错, 比如select打成了 selct, 就会报错, syntax error.</p>
+<h3 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h3><p>优化器是在表里有多个索引的时候, 决定使用哪个索引; 或者一条语句中有多表关联的时候, 决定连接顺序. 比如:</p>
+<p><code>select * from t1 join t2 using(ID) where t1.c=10 and t2.d=20;</code></p>
+<ul>
+<li>既可以先从表 t1 里面取出 c=10 的记录的 ID 值，再根据 ID 值关联到表 t2，再判断 t2 里面 d 的值是否等于 20。</li>
+<li>也可以先从表 t2 里面取出 d=20 的记录的 ID 值，再根据 ID 值关联到 t1，再判断 t1 里面 c 的值是否等于 10。</li>
+</ul>
+<p>上面两种方法的结果是一样的, 但是效率会有所不同. 优化器就是按需决定使用哪种方案.</p>
+<h3 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h3><p>执行器就是将决定好的方案进行执行</p>
+<ul>
+<li>先会根据表名来判断权限, 如果当前用户没有读取这张表的权限 就会直接返回 <code>permission denied for table &#39;xxxx&#39;</code></li>
+<li>有权限就会根据mysql的执行过程, 开始逐行扫描. 只到返回结果.</li>
+</ul>
+<h3 id="小问题"><a href="#小问题" class="headerlink" title="小问题"></a>小问题</h3><blockquote>
+<p>如果表 T 中没有字段 k，而你执行了这个语句 select * from T where k=1, 那肯定是会报“不存在这个列”的错误： “Unknown column ‘k’ in ‘where clause’”。你觉得这个错误是在我们上面提到的哪个阶段报出来的呢？</p>
+</blockquote>
+<p>答案是分析器, 有的人可能以为是执行器, 因为只有执行才知道有没有这个列, 但是错, 不需要读取表就可以知道, mysql有一张schema的表就是专门做这个事儿的. </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MySQL | 关系型数据库</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020-08-18/docs/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-learn-ruby" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -985,82 +1094,6 @@
 
 
   
-    <article id="post-1111" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015-10-20/1111/">无二之旅双十一攻略</a>
-    </h1>
-  
-
-        
-        <a href="/2015-10-20/1111/" class="archive-article-date">
-  	<time datetime="2015-10-20T10:51:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-10-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>###大家好 </p>
-<p>我是Android工程师付强. 下面教大家怎么用这段代码.</p>
-<p>首先你要有chrome浏览器</p>
-<p>然后打开这个页面.</p>
-<p><a href="http://www.tmall.com/wow/act/14931/1111" target="_blank" rel="noopener">http://www.tmall.com/wow/act/14931/1111</a></p>
-<p>第一步,请确保自己是登陆状态! (随意点一个优惠劵领取,如果成功继续)</p>
-<p>第二步,随便找个地方点击鼠标右键，选择审查元素，点击 Console</p>
-<p><img src="http://ww3.sinaimg.cn/large/74311666jw1ex1khsnolmj20870a9405.jpg" alt></p>
-<p><img src="http://ww1.sinaimg.cn/large/74311666jw1ex1ki7t747j20b604fdg1.jpg" alt></p>
-<p>然后复制下面的代码 </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">window, document, undefined</span>) </span>&#123;</span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">800</span>;</span><br><span class="line"><span class="keyword">var</span> closeDelay = <span class="number">500</span>;</span><br><span class="line"><span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> couponLinks;</span><br><span class="line"><span class="keyword">var</span> getCoupon = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">if</span> (index &gt;= couponLinks.length) &#123;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"领完啦! 剁手的时候别找我 TAT "</span>);</span><br><span class="line"><span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> coponLink = couponLinks[index];</span><br><span class="line">coponLink.click(); index++;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"无二之旅 付强 正在帮你领取 第"</span> + index + <span class="string">" 张"</span>);</span><br><span class="line">setTimeout(getCoupon, interval);</span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">var</span> close = <span class="built_in">document</span>.querySelector(<span class="string">'.mui-dialog-close'</span>);</span><br><span class="line"><span class="keyword">if</span> (close != <span class="literal">null</span>) close.click();</span><br><span class="line">&#125;, closeDelay);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> _scrollTop = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> _scrollStep = <span class="built_in">document</span>.documentElement.clientHeight;</span><br><span class="line"><span class="keyword">var</span> _maxScrollTop = <span class="built_in">document</span>.body.clientHeight - <span class="built_in">document</span>.documentElement.clientHeight;</span><br><span class="line"><span class="keyword">var</span> autoScrollDown = setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">_scrollTop += _scrollStep;</span><br><span class="line"><span class="keyword">if</span> (_scrollTop &gt; _maxScrollTop) &#123;</span><br><span class="line">clearInterval(autoScrollDown);</span><br><span class="line">couponLinks = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.mui-act-item-yhqbtn'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"总共："</span> + couponLinks.length + <span class="string">"条张优惠券待领取…"</span>);</span><br><span class="line">getCoupon();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="built_in">document</span>.body.scrollTop = _scrollTop;</span><br><span class="line">&#125;</span><br><span class="line">&#125;, <span class="number">500</span>);</span><br><span class="line">&#125;) (<span class="built_in">window</span>, <span class="built_in">document</span>);</span><br></pre></td></tr></table></figure>
-<p>这里一共这么多类别, 每个类别都有很多优惠劵.大家不要对淘宝客气=-=<br><img src="http://ww2.sinaimg.cn/large/c1b2f9f1jw1ex7t3a5wcjj207o0wcdi4.jpg" alt></p>
-<p>我一共领取了大概300张…</p>
-<p>谢谢大家=-=  如有不懂来找我~</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015-10-20/1111/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1158,10 +1191,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">电影</a>
               </li>
              
@@ -1170,7 +1199,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">BugList</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Code Review</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1178,7 +1215,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Code Review</a>
+                <a href="javascript:void(0)" class="js-tag color5">MySQL | 关系型数据库</a>
               </li>
              
               <li class="article-tag-list-item">
