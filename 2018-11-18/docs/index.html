@@ -6,22 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://cooperfu.github.io">
-  <title>本周放映--The Hateful Eight | Cooper Blog</title>
+  <title>Mysql, 一条语句是怎么执行的? | Cooper Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本周推荐 The Hateful Eight本周推荐来源于室友. 偶然提到昆汀大神有新片了准备回国看,因为昆汀的片子在中国基本看不了..然而今天惊喜的发现网上有资源了! 所以本着杠铃影城的宗旨, 只能放弃刘阿姨推荐的东北玩泥巴 哦不对, 印度片. 放映 《八恶人》. 关于昆汀·塔伦蒂诺昆汀·塔伦蒂诺应该不用过多介绍, 从《低俗小说》开始,到 《杀死比尔》.在到《被解救的姜戈》.说成步步精品也不足为">
+  <meta name="description" content="select * from table where id=2; 上面这条语句是怎么执行的呢?  连接器首先mysql会连接mysql服务器, 通常是用 mysql -h$ip -P$port -u$user -p 的方式连接 最后一个-p是密码, 不推荐明文直接输入, 上面的方式按回车后, 系统会让你输入密码, 然后根据内置的权限表查看当前用户是否有相关权限. 默认保持一个长链接, 有一个参数是w">
+<meta name="keywords" content="MySQL | 关系型数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="本周放映--The Hateful Eight">
-<meta property="og:url" content="http://cooperfu.github.io/2016-01-19/2016-01-19/index.html">
+<meta property="og:title" content="Mysql, 一条语句是怎么执行的?">
+<meta property="og:url" content="http://cooperfu.github.io/2018-11-18/docs/index.html">
 <meta property="og:site_name" content="Cooper Blog">
-<meta property="og:description" content="本周推荐 The Hateful Eight本周推荐来源于室友. 偶然提到昆汀大神有新片了准备回国看,因为昆汀的片子在中国基本看不了..然而今天惊喜的发现网上有资源了! 所以本着杠铃影城的宗旨, 只能放弃刘阿姨推荐的东北玩泥巴 哦不对, 印度片. 放映 《八恶人》. 关于昆汀·塔伦蒂诺昆汀·塔伦蒂诺应该不用过多介绍, 从《低俗小说》开始,到 《杀死比尔》.在到《被解救的姜戈》.说成步步精品也不足为">
+<meta property="og:description" content="select * from table where id=2; 上面这条语句是怎么执行的呢?  连接器首先mysql会连接mysql服务器, 通常是用 mysql -h$ip -P$port -u$user -p 的方式连接 最后一个-p是密码, 不推荐明文直接输入, 上面的方式按回车后, 系统会让你输入密码, 然后根据内置的权限表查看当前用户是否有相关权限. 默认保持一个长链接, 有一个参数是w">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://img1.gtimg.com/ent/pics/hv1/126/114/1903/123771771.jpg">
-<meta property="og:image" content="http://img1.gtimg.com/ent/pics/hv1/88/112/1903/123771223.jpg">
-<meta property="og:updated_time" content="2017-05-19T19:06:28.000Z">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
+<meta property="og:updated_time" content="2020-08-18T08:36:50.704Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="本周放映--The Hateful Eight">
-<meta name="twitter:description" content="本周推荐 The Hateful Eight本周推荐来源于室友. 偶然提到昆汀大神有新片了准备回国看,因为昆汀的片子在中国基本看不了..然而今天惊喜的发现网上有资源了! 所以本着杠铃影城的宗旨, 只能放弃刘阿姨推荐的东北玩泥巴 哦不对, 印度片. 放映 《八恶人》. 关于昆汀·塔伦蒂诺昆汀·塔伦蒂诺应该不用过多介绍, 从《低俗小说》开始,到 《杀死比尔》.在到《被解救的姜戈》.说成步步精品也不足为">
-<meta name="twitter:image" content="http://img1.gtimg.com/ent/pics/hv1/126/114/1903/123771771.jpg">
+<meta name="twitter:title" content="Mysql, 一条语句是怎么执行的?">
+<meta name="twitter:description" content="select * from table where id=2; 上面这条语句是怎么执行的呢?  连接器首先mysql会连接mysql服务器, 通常是用 mysql -h$ip -P$port -u$user -p 的方式连接 最后一个-p是密码, 不推荐明文直接输入, 上面的方式按回车后, 系统会让你输入密码, 然后根据内置的权限表查看当前用户是否有相关权限. 默认保持一个长链接, 有一个参数是w">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
   
     <link rel="alternative" href="/atom.xml" title="Cooper Blog" type="application/atom+xml">
   
@@ -157,39 +157,62 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-2016-01-19" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-docs" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      本周放映--The Hateful Eight
+      Mysql, 一条语句是怎么执行的?
     </h1>
   
 
         
-        <a href="/2016-01-19/2016-01-19/" class="archive-article-date">
-  	<time datetime="2016-01-19T06:48:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-01-19</time>
+        <a href="/2018-11-18/docs/" class="archive-article-date">
+  	<time datetime="2018-11-18T08:10:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="本周推荐-The-Hateful-Eight"><a href="#本周推荐-The-Hateful-Eight" class="headerlink" title="本周推荐 The Hateful Eight"></a>本周推荐 The Hateful Eight</h1><p>本周推荐来源于室友. 偶然提到昆汀大神有新片了准备回国看,因为昆汀的片子在中国基本看不了..然而今天惊喜的发现网上有资源了! 所以本着杠铃影城的宗旨, 只能放弃刘阿姨推荐的东北玩泥巴 哦不对, 印度片. 放映 《八恶人》.</p>
-<h2 id="关于昆汀·塔伦蒂诺"><a href="#关于昆汀·塔伦蒂诺" class="headerlink" title="关于昆汀·塔伦蒂诺"></a>关于昆汀·塔伦蒂诺</h2><p><img src="http://img1.gtimg.com/ent/pics/hv1/126/114/1903/123771771.jpg" alt><br>昆汀·塔伦蒂诺应该不用过多介绍, 从《低俗小说》开始,到 《杀死比尔》.在到《被解救的姜戈》.说成步步精品也不足为奇.</p>
-<p>昆汀·塔伦蒂诺从 1987 年开始拍摄第一部电影,眼看 30 年要过去，这位先生一共执导的作品寥寥可数。本次放映的正好是他的第 8 部作品《八恶人》.</p>
-<p>他曾经说,自己只拍 10 部电影就退休,保证自己拍的每部电影都是精品.这话听起来有些耳熟，《这个杀手不太冷》的导演吕克·贝松也曾经说过这句话，不过他现在的作品已经数不清了.</p>
-<h2 id="关于电影本身"><a href="#关于电影本身" class="headerlink" title="关于电影本身"></a>关于电影本身</h2><ul>
-<li>IMDb 8.1</li>
-<li>豆瓣 8.5</li>
+        <p><code>select * from table where id=2;</code></p>
+<p>上面这条语句是怎么执行的呢?</p>
+<p><img src="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png" alt></p>
+<h3 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h3><p>首先mysql会连接mysql服务器, 通常是用 <code>mysql -h$ip -P$port -u$user -p</code> 的方式连接</p>
+<p>最后一个-p是密码, 不推荐明文直接输入, 上面的方式按回车后, 系统会让你输入密码, 然后根据内置的权限表查看当前用户是否有相关权限.</p>
+<p>默认保持一个长链接, 有一个参数是wait_timeout 默认是8小时.</p>
+<ul>
+<li>会有长连接相关问题.</li>
 </ul>
-<p><img src="http://img1.gtimg.com/ent/pics/hv1/88/112/1903/123771223.jpg" alt></p>
-<p>《八恶人》讲述了美国南北战争数年后,八名身份各异的人阴差阳错地来到怀俄明州的一座山口的马车驿站,等待去往红岩镇. 但却被一场冰雪暴困在了红岩镇……一个房间里面, 八个身份不明的人, 因为一杯有毒的咖啡, 陷入一场争斗中.</p>
-<p>当然《八恶人》不会是一部纯粹的西部片. 在一个 8 人齐聚的房间里,每个人都互相不信任，赏金猎人、女囚、黑人, 这当中没有真正的好人和坏人, 每个人都让人憎恨. 昆汀说, 这部电影有点像《落水狗》, 又有点像尤金·奥尼尔的戏剧《送冰人来了》, 不过这一切都是西部风格的.</p>
-<h2 id="70mm"><a href="#70mm" class="headerlink" title="70mm"></a>70mm</h2><p>《八恶人》将在今年圣诞率先以 70mm 胶片的格式上映，在一月份才会上映数字版本. 70mm 的剧情片非常少, 在过去的很多年中, 只有保罗-托马斯-安德森的《大师》和肯尼思-布拉纳的《哈姆雷特》采用过该格式上映. 所以《八恶人》可能是 20 年来, 以 70mm 格式公映的规模最大的影片.</p>
-<p>昆汀曾经公开表示数字电影宣判了电影的死亡，“我他妈真的不明白，为什么一个有基础的电影制作人要选择数字化”. 对于昆汀这样的痞子来说, 一定要时不时做些和好莱坞唯利是图相悖的事情, 可想而知这次采用胶片拍摄, 他内心有多么得意.</p>
+<h3 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h3><ul>
+<li>通过输入的查询语句, 先会去查询缓存, 看看是否之前有查询过一模一样的语句, 有hit就直接返回.</li>
+<li>缓存策略大概是key-value的形式, key是查询语句, value是返回结果. key-value的好处是复杂度是O(1). </li>
+<li>但是基本很难命中, 因为但凡一个表中任意一条数据的一个小字段更新了, 那么这张表的缓存基本作废. 就会被移出掉.</li>
+<li>缓存例外基本是静态表, 比如一张配置表, 很久都不会有人去更新他, 那么缓存的作用就大大增加.</li>
+<li>可以直接指定查询缓存, <code>select SQL_CACHE * from table where id=2;</code> 但是在mysql 8.0之后 这个特性就去掉了.</li>
+</ul>
+<h3 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h3><p>分析器顾名思义, 就是分析输入的语句, 变成格式化的dsl</p>
+<p><code>select * from table where id=2;</code></p>
+<p>就会分析 是要从 table这张表中 找  列id的值等于2 的结果.</p>
+<p>如果打错, 比如select打成了 selct, 就会报错, syntax error.</p>
+<h3 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h3><p>优化器是在表里有多个索引的时候, 决定使用哪个索引; 或者一条语句中有多表关联的时候, 决定连接顺序. 比如:</p>
+<p><code>select * from t1 join t2 using(ID) where t1.c=10 and t2.d=20;</code></p>
+<ul>
+<li>既可以先从表 t1 里面取出 c=10 的记录的 ID 值，再根据 ID 值关联到表 t2，再判断 t2 里面 d 的值是否等于 20。</li>
+<li>也可以先从表 t2 里面取出 d=20 的记录的 ID 值，再根据 ID 值关联到 t1，再判断 t1 里面 c 的值是否等于 10。</li>
+</ul>
+<p>上面两种方法的结果是一样的, 但是效率会有所不同. 优化器就是按需决定使用哪种方案.</p>
+<h3 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h3><p>执行器就是将决定好的方案进行执行</p>
+<ul>
+<li>先会根据表名来判断权限, 如果当前用户没有读取这张表的权限 就会直接返回 <code>permission denied for table &#39;xxxx&#39;</code></li>
+<li>有权限就会根据mysql的执行过程, 开始逐行扫描. 只到返回结果.</li>
+</ul>
+<h3 id="小问题"><a href="#小问题" class="headerlink" title="小问题"></a>小问题</h3><blockquote>
+<p>如果表 T 中没有字段 k，而你执行了这个语句 select * from T where k=1, 那肯定是会报“不存在这个列”的错误： “Unknown column ‘k’ in ‘where clause’”。你觉得这个错误是在我们上面提到的哪个阶段报出来的呢？</p>
+</blockquote>
+<p>答案是分析器, 有的人可能以为是执行器, 因为只有执行才知道有没有这个列, 但是错, 不需要读取表就可以知道, mysql有一张schema的表就是专门做这个事儿的. </p>
 
       
 
@@ -219,6 +242,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MySQL | 关系型数据库</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -269,7 +303,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://cooperfu.github.io/2016-01-19/2016-01-19/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://cooperfu.github.io/2018-11-18/docs/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -283,18 +317,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2016-01-21/2015-01-21/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          instant Run之后libpng error not a png file最佳解决方案
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016-01-02/2016-01-02/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">所有的美好都与你不期而遇</div>
+    <a href="/2016-01-25/learn-ruby/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Learn ruby</div>
       <i class="icon-circle-right"></i>
     </a>
   
